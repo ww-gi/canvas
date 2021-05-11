@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			#myCan{
+				border: 1px solid black;
+				background-color: #000000;
+			}
+		</style>
+	</head>
+	<body>
+		<div></div>
+		<canvas id="myCan" width="600" height="400" ></canvas>
+		<script>
+			var oCn=document.getElementById('myCan');
+			
+			oCn.width=document.documentElement.clientWidth;
+			oCn.height=document.documentElement.clientHeight;
+			var pen=oCn.getContext('2d');
+			
+			
+			//定义小球对象
+			function Ball(x,y){
+				this.x=y;
+				this.y=y;
+				var a=parseInt(Math.random()*256);
+				var b=parseInt(Math.random()*256);
+				var c=parseInt(Math.random()*256);
+				this.color="rgb(" + a + "," + b +"," + c + ")";
+				this.r=20;
+				
+				this.dx=parseInt(Math.random()*10)-5;
+				this.dy=parseInt(Math.random()*10)-5;
+				
+				//将小球放入到集合balls中
+				balls.push(this);
+			}
+			
+			//添加一个方法：渲染方法
+			
+			Ball.prototype.render=function(){
+				
+				pen.beginPath();
+				pen.arc(this.x,this.y,this.r,0,Math.PI*2,true);
+				pen.fillStyle=this.color;
+				pen.fill();
+			}
+			
+			Ball.prototype.update=function(){
+				this.x+=this.dx;
+				this.y+=this.dy;
+				
+				this.r--;
+				
+				
+				if(this.r<=0){
+					this.die();
+				}
+				
+			}
+			//删除小球
+			Ball.prototype.die=function(){
+				//在数组中移除小球
+				for(var i=0;i<balls.length;i++){
+					if(balls[i]==this){
+						//判断是否是同一个
+						balls.splice(i,1);
+						break;//删除该小球
+					}
+				}
+			}
+			
+			
+			
+			var balls=[];//统一管理小球的集合
+			
+			// var ball=new Ball(20,50);
+			// var ball2=new Ball(20,100);
+			
+			setInterval(function(){
+		
+				pen.clearRect(0,0,oCn.width,oCn.height);
+				pen.fillStyle="black";
+				pen.fillText("数量："+balls.length,20,10);
+				
+				for(var i=0;i<balls.length;i++){
+					balls[i].update();
+				// 	if(balls[i]!=null){				
+				// 	balls[i].render();
+				// }	
+				
+				balls[i] && balls[i].render();
+					}
+				
+			},20);
+			
+			document.onmousemove=function(ev){
+				var ev=ev|| window.event;
+				new Ball(ev.clientX,ev.clientY);
+			}
+		</script>
+	</body>
+</html>
